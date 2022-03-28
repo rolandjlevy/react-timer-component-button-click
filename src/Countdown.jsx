@@ -12,7 +12,7 @@ const formatCountdown = (timer) => {
   const h = formatString(hours, 'hour');
   const m = formatString(mins, 'minute');
   const s = formatString(secs, 'second');
-  return total > 0 ? `If ordered within ${h} ${m} ${s}` : '';
+  return total > 0 ? `if ordered within ${h} ${m} ${s}` : '';
 }
 
 const countdownDate = ({ cutOffDate }) => {
@@ -74,8 +74,7 @@ const Countdown = () => {
     <main className="container">
       {timer.total > 0 ?
         (<section>
-          <p>FREE Delivery, Next day</p>
-          <p>{formatCountdown(timer)}</p>
+          <p>FREE Delivery, Next day {formatCountdown(timer)}</p>
           <p>{JSON.stringify(timer)}</p>
         </section>) : 
         (<section>
