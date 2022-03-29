@@ -12,7 +12,7 @@ const formatCountdown = (timer) => {
   const h = formatString(hours, 'hour');
   const m = formatString(mins, 'minute');
   const s = formatString(secs, 'second');
-  return total > 0 ? `if ordered within ${h} ${m} ${s}` : '';
+  return total > 0 ? `FREE Delivery, Next day if ordered within ${h} ${m} ${s}` : 'Loading...';
 }
 
 const countdownDate = ({ cutOffDate }) => {
@@ -28,8 +28,6 @@ const countdownDate = ({ cutOffDate }) => {
 }
 
 const url = 'https://express-api-for-react-timer.rolandjlevy.repl.co/cutoff';
-
-const linkText = 'Estimated delivery dates have changed. Get updated dates';
 
 const Countdown = () => {
   const countdownRunning = useRef(false);
@@ -74,11 +72,11 @@ const Countdown = () => {
     <main className="container">
       {timer.total > 0 ?
         (<section>
-          <p>FREE Delivery, Next day {formatCountdown(timer)}</p>
+          <p>{formatCountdown(timer)}</p>
           <p>{JSON.stringify(timer)}</p>
         </section>) : 
         (<section>
-          <a href="#" onClick={handleClick}>{linkText}</a>
+          <a href="#" onClick={handleClick}>Estimated delivery dates have changed. Get updated dates</a>
         </section>)}
     </main>
   );
