@@ -12,7 +12,7 @@ const formatCountdown = (timer) => {
   const h = formatString(hours, 'hour');
   const m = formatString(mins, 'minute');
   const s = formatString(secs, 'second');
-  return total > 0 ? `FREE Delivery, Next day if ordered within ${h} ${m} ${s}` : 'Loading...';
+  return total > 1 ? `FREE Delivery, Next day if ordered within ${h} ${m} ${s}` : 'Loading...';
 }
 
 const countdownDate = ({ cutOffDate }) => {
@@ -27,12 +27,14 @@ const countdownDate = ({ cutOffDate }) => {
   };
 }
 
-const url = 'https://express-api-for-react-timer.rolandjlevy.repl.co/cutoff';
+const baseUrl = 'https://express-api-for-react-timer.rolandjlevy.repl.co/cutoff';
 
 const Countdown = () => {
   const countdownRunning = useRef(false);
   const timerRef = useRef(null);
   const [timer, setTimer] = useState({ total: 1 });
+  const query = new URLSearchParams(window.location.search);
+  const loopDuration = query.get('loopDuration') || 0.5;
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -57,6 +59,7 @@ const Countdown = () => {
     if (!countdownRunning.current) {
       try {
         const options = { cancelToken: source.token };
+        const url = `${baseUrl}?loopDuration=${loopDuration}`;
         const { data } = await axios.get(url, options);
         const countdown = countdownDate({ cutOffDate: data.time });
         setTimer(countdown);
@@ -72,6 +75,11 @@ const Countdown = () => {
     <main className="container">
       {timer.total > 0 ?
         (<section>
+          <p>
+            <a href="/?loopDuration=0.5">0.5 mins</a>&nbsp;|&nbsp; 
+            <a href="/?loopDuration=2">2 mins</a>&nbsp;|&nbsp;  
+            <a href="/?loopDuration=90">90 mins</a>
+          </p>
           <p>{formatCountdown(timer)}</p>
           <p>{JSON.stringify(timer)}</p>
         </section>) : 
