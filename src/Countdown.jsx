@@ -33,13 +33,13 @@ const Countdown = () => {
   const countdownRunning = useRef(false);
   const timerRef = useRef(null);
   const [timer, setTimer] = useState({ total: 1 });
-  const query = new URLSearchParams(window.location.search);
-  const loopDuration = query.get('loopDuration') || 0.5;
+  const [loopDuration, setLoopDuration] = useState(0.5);
 
-  const handleClick = (e) => {
+  const handleClick = (e, seconds) => {
     e.preventDefault();
+    setLoopDuration(seconds);
+    setTimer({ total: 1 });
     countdownRunning.current = false;
-    setTimer({});
   }
       
   useEffect(() => {
@@ -76,15 +76,15 @@ const Countdown = () => {
       {timer.total > 0 ?
         (<section>
           <p>
-            <a href="/?loopDuration=0.5">0.5 mins</a>&nbsp;|&nbsp; 
-            <a href="/?loopDuration=2">2 mins</a>&nbsp;|&nbsp;  
-            <a href="/?loopDuration=90">90 mins</a>
+            <a href="#" onClick={(e) => handleClick(e, 0.5)}>0.5 mins</a>&nbsp;|&nbsp; 
+            <a href="#" onClick={(e) => handleClick(e, 2)}>2 mins</a>&nbsp;|&nbsp;  
+            <a href="#" onClick={(e) => handleClick(e, 90)}>90 mins</a>
           </p>
           <p>{formatCountdown(timer)}</p>
           <p>{JSON.stringify(timer)}</p>
         </section>) : 
         (<section>
-          <a href="#" onClick={handleClick}>Estimated delivery dates have changed. Get updated dates</a>
+          <a href="#" onClick={(e) => handleClick(e, 5)}>Estimated delivery dates have changed. Get updated dates</a>
         </section>)}
     </main>
   );
