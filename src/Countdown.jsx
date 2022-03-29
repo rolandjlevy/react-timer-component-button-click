@@ -8,10 +8,10 @@ const formatString = (n, str) => {
 }
 
 const formatCountdown = (timer) => {
-  const { hours, mins, secs, total } = timer;
+  const { hours, minutes, seconds, total } = timer;
   const h = formatString(hours, 'hour');
-  const m = formatString(mins, 'minute');
-  const s = formatString(secs, 'second');
+  const m = formatString(minutes, 'minute');
+  const s = formatString(seconds, 'second');
   return total > 1 ? `FREE Delivery, Next day if ordered within ${h} ${m} ${s}` : 'Loading...';
 }
 
@@ -20,8 +20,8 @@ const countdownDate = ({ cutOffDate }) => {
   const duration = moment.duration(difference);
   return {
     hours: duration.hours(),
-    mins: duration.minutes(),
-    secs: duration.seconds(),
+    minutes: duration.minutes(),
+    seconds: duration.seconds(),
     total: difference,
     cutOffDate
   };
