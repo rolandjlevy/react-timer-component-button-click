@@ -12,7 +12,7 @@ const formatCountdown = (timer) => {
   const h = formatString(hours, 'hour');
   const m = formatString(minutes, 'minute');
   const s = formatString(seconds, 'second');
-  return total > 1 ? `FREE Delivery, Next day if ordered within ${h} ${m} ${s}` : 'Loading...';
+  return total > 0 ? `FREE Delivery, Next day if ordered within ${h} ${m} ${s}` : 'Loading...';
 }
 
 const countdownDate = ({ cutOffDate }) => {
@@ -29,19 +29,34 @@ const countdownDate = ({ cutOffDate }) => {
 
 const baseUrl = 'https://express-api-for-react-timer.rolandjlevy.repl.co/cutoff';
 
+const Content = ({ timer, handleClick, formatCountdown }) => (
+  timer.total > 0 ?
+    (<section>
+      <p>
+        {[0.5, 2, 15, 90, 600].map((item, index, array) => {
+          const delimeter = index < array.length-1 ? ' ~ ' : '';
+          return <><a href="#" onClick={(e) => handleClick(e, item)}>{item} mins</a>{delimeter}</>})}
+      </p>
+      <p>{formatCountdown(timer)}</p>
+      <p>{JSON.stringify(timer)}</p>
+    </section>) : 
+    (<section>
+      <a href="#" onClick={(e) => handleClick(e, 0.5)}>Estimated delivery dates have changed. Get updated dates</a>
+    </section>));
+
 const Countdown = () => {
   const countdownRunning = useRef(false);
   const timerRef = useRef(null);
-  const [timer, setTimer] = useState({ total: 1 });
+  const [timer, setTimer] = useState({ total: 0 });
   const [loopDuration, setLoopDuration] = useState(0.5);
 
   const handleClick = (e, seconds) => {
     e.preventDefault();
     setLoopDuration(seconds);
-    setTimer({ total: 1 });
+    setTimer({ total: 0 });
     countdownRunning.current = false;
   }
-      
+
   useEffect(() => {
     if (timer.total > 0) {
       timerRef.current = setTimeout(() => {
@@ -73,19 +88,12 @@ const Countdown = () => {
 
   return (
     <main className="container">
-      {timer.total > 0 ?
-        (<section>
-          <p>
-            <a href="#" onClick={(e) => handleClick(e, 0.5)}>0.5 mins</a>&nbsp;|&nbsp; 
-            <a href="#" onClick={(e) => handleClick(e, 2)}>2 mins</a>&nbsp;|&nbsp;  
-            <a href="#" onClick={(e) => handleClick(e, 90)}>90 mins</a>
-          </p>
-          <p>{formatCountdown(timer)}</p>
-          <p>{JSON.stringify(timer)}</p>
-        </section>) : 
-        (<section>
-          <a href="#" onClick={(e) => handleClick(e, 5)}>Estimated delivery dates have changed. Get updated dates</a>
-        </section>)}
+      {countdownRunning.current ?
+      (<Content 
+        timer={timer} 
+        handleClick={handleClick}
+        formatCountdown={formatCountdown}
+      />) : (<section>Loading next countdown...</section>)}
     </main>
   );
 }
