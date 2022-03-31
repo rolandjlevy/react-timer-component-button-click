@@ -1,39 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import moment from 'moment';
 
-const formatString = (n, str) => {
-  const pluralStr = n > 1 ? `${str}s` : str;
-  return n > 0 ? `${n} ${pluralStr}` : '';
-}
+import { formatCountdown, countdownDate } from './utils';
 
-const formatCountdown = (timer) => {
-  const { hours, minutes, seconds, total } = timer;
-  const h = formatString(hours, 'hour');
-  const m = formatString(minutes, 'minute');
-  const s = formatString(seconds, 'second');
-  return total > 0 ? `FREE Delivery, Next day if ordered within ${h} ${m} ${s}` : 'Loading...';
-}
-
-const countdownDate = ({ cutOffDate }) => {
-  const difference = moment(cutOffDate).diff(moment(), 'millseconds');
-  const duration = moment.duration(difference);
-  return {
-    hours: duration.hours(),
-    minutes: duration.minutes(),
-    seconds: duration.seconds(),
-    total: difference,
-    cutOffDate
-  };
-}
-
-const baseUrl = 'https://express-api-for-react-timer.rolandjlevy.repl.co/cutoff';
-
-const Content = ({ timer, handleClick, formatCountdown }) => (
+const Content = ({ timer, handleClick }) => (
   timer.total > 0 ?
     (<section>
       <p>
-        {[0.5, 2, 15, 90, 600].map((item, index, array) => {
+        {[0.05, 0.5, 2, 15, 90, 600].map((item, index, array) => {
           const delimeter = index < array.length-1 ? ' ~ ' : '';
           return <><a href="#" onClick={(e) => handleClick(e, item)}>{item} mins</a>{delimeter}</>})}
       </p>
@@ -74,7 +48,7 @@ const Countdown = () => {
     if (!countdownRunning.current) {
       try {
         const options = { cancelToken: source.token };
-        const url = `${baseUrl}?loopDuration=${loopDuration}`;
+        const url = `${API_URL}?loopDuration=${loopDuration}`;
         const { data } = await axios.get(url, options);
         const countdown = countdownDate({ cutOffDate: data.time });
         setTimer(countdown);
@@ -92,7 +66,6 @@ const Countdown = () => {
       (<Content 
         timer={timer} 
         handleClick={handleClick}
-        formatCountdown={formatCountdown}
       />) : (<section>Loading next countdown...</section>)}
     </main>
   );
